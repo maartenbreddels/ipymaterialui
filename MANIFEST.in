@@ -1,0 +1,2 @@
+recursive-include ipymaterialui/static *.*
+include jupyter-materialui.json
