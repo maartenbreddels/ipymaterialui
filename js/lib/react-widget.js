@@ -25,6 +25,7 @@ function FontSizeTheme(props) {
   );
 }
 
+// TODO: move Material-UI specific parts (such as style) to subclass
 export
 class ReactModel extends widgets.DOMWidgetModel {
     // defaults: _.extend(widgets.DOMWidgetModel.prototype.defaults(), {
@@ -38,6 +39,8 @@ class ReactModel extends widgets.DOMWidgetModel {
             _view_module_version : '0.1.0',
         })
     }
+    autoProps = []
+    reactComponent = () => Dummy
     getProps = () => { return {model:this, ...this.genProps()} }
     genProps(props) {
         let newProps = {};
@@ -50,11 +53,14 @@ class ReactModel extends widgets.DOMWidgetModel {
                 }
             })
         }
-        this.autoProps.forEach((key) => {
+        const autoProps = ['style', ...this.autoProps]
+        autoProps.forEach((key) => {
                 let attribute_key = snakeCase(key);
             if(props && key in props) // sync back to backbone/widget
                 this.set(attribute_key, props[key])
             newProps[key] = this.get(attribute_key)
+            if(newProps[key] && this.widgetProps && this.widgetProps.indexOf(key) !== -1)
+                newProps[key] = newProps[key].createWrappedReactElement()
         })
         return newProps
     }
@@ -71,10 +77,14 @@ class ReactModel extends widgets.DOMWidgetModel {
     }
     getChildren() {
         let children = [];
-        if(this.get('icon'))
-            children.push(this.getChildWidgetComponent('icon'))
+        // if(this.get('icon'))
+        //     children.push(this.getChildWidgetComponent('icon'))
         if(this.get('description'))
             children.push(this.get('description'))
+        if(this.get('content'))
+            children.push(this.get('content'))
+        if(this.get('child'))
+            children.push(this.get('child').createWrappedReactElement())
         if(this.get('children'))
             children = children.concat(...this.getChildWidgetComponentList('children'))
         return children;
@@ -96,9 +106,9 @@ class ReactModel extends widgets.DOMWidgetModel {
         let widgetList = this.get(name);
         return widgetList.map((widget) => {
             if(widget instanceof ReactModel) {
-                return widget.createWrappedReactElement({key: this.cid})
+                return widget.createWrappedReactElement({key: widget.cid})
             } else {
-                console.error('not a react')
+                return <BlackboxWidget widget={widget}></BlackboxWidget>
             }
         });
     }
@@ -107,6 +117,10 @@ class ReactModel extends widgets.DOMWidgetModel {
 ReactModel.serializers = {
     ...widgets.DOMWidgetModel.serializers,
     children: {deserialize: widgets.unpack_models},
+    child: {deserialize: widgets.unpack_models},
+    // icon: {deserialize: widgets.unpack_models},
+    value: {deserialize: widgets.unpack_models},
+    control: {deserialize: widgets.unpack_models},
 };
 
 export
@@ -119,7 +133,7 @@ var ReactView = widgets.DOMWidgetView.extend({
     },
 
     react_render: function() {
-        this.react_element = this.model.createWrappedReactElement()
+        this.react_element = this.model.createWrappedReactElement({})
         ReactDOM.render(<FontSizeTheme>{this.react_element}</FontSizeTheme>, this.root_element);
         // this.app = this.model.createWrappedReactComponent()
         // ReactDOM.render(this.app, this.app_element);
