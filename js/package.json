@@ -1,6 +1,6 @@
 {
   "name": "jupyter-materialui",
-  "version": "0.1.0",
+  "version": "0.0.1-alpha.0",
   "description": "Jupyter Widgets based on React Material UI components",
   "author": "Maarten A. Breddels",
   "main": "lib/index.js",
