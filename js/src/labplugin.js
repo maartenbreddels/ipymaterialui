@@ -7,8 +7,8 @@ module.exports = {
     activate: function (app, widgets) {
         widgets.registerWidget({
             name: 'jupyter-materialui',
-            version: jupyter - materialui.version,
-            exports: jupyter - materialui
+            version: jupyter_materialui.version,
+            exports: jupyter_materialui
         });
     },
     autoStart: true
