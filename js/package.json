@@ -23,14 +23,13 @@
     "clean": "rimraf dist/",
     "prepare": "npm run build:lib && webpack",
     "build:lib": "babel src --out-dir lib",
-    "prepublish": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/preset-env": "^7.3.1",
-    "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
     "css-loader": "^1.0.1",
