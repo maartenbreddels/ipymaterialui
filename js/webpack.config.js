@@ -51,6 +51,9 @@ module.exports = [
         module: {
             rules: rules
         },
+        resolve: {
+            alias: {'./style_wrap': path.resolve(__dirname, 'src/style_wrap_notebook.js')},
+        },
         externals: ['@jupyter-widgets/base']
     },
     {// Embeddable jupyter-materialui bundle
