@@ -16,7 +16,7 @@ __pycache__
 \#*#
 .#*
 .coverage
-src
+js/lib
 
 *.swp
 *.map

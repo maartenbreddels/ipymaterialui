@@ -3,27 +3,8 @@ import * as ReactDOM from 'react-dom';
 import * as _ from 'lodash';
 import { camelCase, snakeCase } from 'lodash';
 import * as widgets from '@jupyter-widgets/base';
+import {styleWrapper} from './style_wrap'
 
-// TODO: this part should be notebook only, since its fontsize is non-16
-// jupyter notebook (classical) fontfix
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-
-const theme = createMuiTheme({
-    typography: {
-        // Tell Material-UI what the font-size on the html element is.
-        htmlFontSize: 10,
-        useNextVariants: true,
-    },
-});
-
-function FontSizeTheme(props) {
-    return (
-        <MuiThemeProvider theme={theme}>
-            <Typography component="span">{props.children}</Typography>
-        </MuiThemeProvider>
-    );
-}
 
 // TODO: move Material-UI specific parts (such as style) to subclass
 export
@@ -134,7 +115,7 @@ export
 
         react_render: function () {
             this.react_element = this.model.createWrappedReactElement({})
-            ReactDOM.render(<FontSizeTheme>{this.react_element}</FontSizeTheme>, this.root_element);
+            ReactDOM.render(styleWrapper(this.react_element), this.root_element);
             // this.app = this.model.createWrappedReactComponent()
             // ReactDOM.render(this.app, this.app_element);
         },
