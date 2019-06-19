@@ -28,3 +28,7 @@ config.rst
 /.pydevproject
 
 package-lock.json
+
+/ipymaterialui/static
+generated/
+generated_lab/

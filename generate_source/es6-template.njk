@@ -1,0 +1,61 @@
+{% block header %}
+{% endblock %}
+{% block imports %}
+{% block globalimports %}
+{% endblock %}
+{% block localimports %}
+{% endblock %}
+{% endblock %}
+{% block widgets %}
+{% for widget in widgets %}
+{% block widget %}
+{% if widget.name === "ReactWidget" %}
+import {
+    DOMWidgetModel, unpack_models,
+} from '@jupyter-widgets/base';
+{% else %}
+{% if outputMultiple %}
+{% for ref in widgets[0].localDependencies if ref !== "ReactWidgetModel" %}
+import { {{ ref }}Model } from './{{ ref }}';
+{% endfor %}
+import { unpack_models } from '@jupyter-widgets/base';
+{% endif %}
+{% endif %}
+
+{% if widget.name !== "ReactWidget" %}
+import {{ widget.name }} from '@material-ui/core/{%- if widget.name === "TouchRipple" %}
+ButtonBase/{% endif -%}{{ widget.name }}';
+{% endif %}
+export class {{ widget.name }}Model extends {{ widget.inherits[0] }}Model {
+{% block widgetbody %}
+    defaults() {
+        return {
+            ...super.defaults(),
+            ...{
+                _model_name: '{{ widget.name }}Model',
+                {% if widget.properties %}
+                {% for propName, prop in widget.properties %}
+                {{ propName }}: {{ prop.default }},
+                {% endfor %}
+                {% endif %}
+            },
+        };
+    }
+    {% if widget.name !== "ReactWidget" %}
+
+    getReactComponent() { // eslint-disable-line class-methods-use-this
+        return {{ widget.name }};
+    }
+    {% endif %}
+{% endblock %}
+}
+
+{{ widget.name }}Model.serializers = {
+    ...{{ widget.inherits[0] }}Model.serializers,
+    {% for key, serializer in widget.serializers %}
+    {{ key }}: {{ serializer }},
+    {% endfor %}
+};
+{% endblock %}
+{% endfor %}
+{% endblock %}
