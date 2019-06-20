@@ -43,9 +43,14 @@ class BackboneWidget extends React.Component {
         const childProps = model.keys()
             .filter(k => !k.startsWith('_') && k !== 'layout' && model.get(k) != null)
             .reduce((accumulator, key) => {
-                const v = (key === 'anchor_el')
-                    ? document.querySelector(`[cid=${model.get(key).cid}]`)
-                    : replaceModels(model.get(key));
+                let v
+                if (key === 'anchor_el') {
+                    v = document.querySelector(`[cid=${model.get(key).cid}]`)
+                } else if (key === 'value') {
+                    v = model.get(key);
+                } else {
+                    v = replaceModels(model.get(key));
+                }
                 return {...accumulator, [snakeToCamel(key)]: v}
             }, {});
 
@@ -112,7 +117,7 @@ function wrapBackbone(model) {
         model,
         key: model.cid,
         cid: model.cid,
-        ...['ToggleButtonModel', 'MenuItemModel'].includes(model.name) && {value: model.get('value')},
+        ...['ToggleButtonModel', 'MenuItemModel', 'TabModel'].includes(model.name) && {value: model.get('value')},
         ...['MenuItemModel'].includes(model.name) && {children: replaceModels(model.get('children'))},
     });
 }

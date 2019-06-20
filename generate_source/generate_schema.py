@@ -40,10 +40,31 @@ def make_type(type_content, name='bla'):
         type_ = 'object'
     if type_ == 'number':
         type_ = 'float'
+    if type_ == 'custom' and 'raw' in type_content.keys() and type_content['raw'].startswith('chainPropTypes(PropTypes.node'):
+        type_ = 'node'
 
-    if type_ in ['string', 'float', 'any', 'object', 'boolean']:
+    if type_ in ['string', 'float', 'object', 'boolean']:
         return {
             'type': type_,
+            'allowNull': True,
+            'default': None
+        }
+    
+    if type_ == 'any':
+        return {
+            'type': 'union',
+            'oneOf': [{
+                'type': 'any'
+            }, {
+                'type': 'widgetRef',
+                'widgetType': 'DOMWidget'
+            },{
+                'type': 'array',
+                'items': {
+                    'type': 'widgetRef',
+                    'widgetType': 'DOMWidget'
+                } 
+            }],
             'allowNull': True,
             'default': None
         }
@@ -117,11 +138,11 @@ def make_prop(prop_data):
 def get_props_of_widget(widget_data):
     parent = widget_data['inheritance'] and widget_data['inheritance']['component']
     # print(f"name: {widget_data['name']}, parent: {parent}")
+    if widget_data['name'] == 'MenuItem':
+        widget_data['props']['value'] = {'type': {'name': 'any'}}
+        
     props = [make_prop(prop) for prop in widget_data['props'].items()]
     props = list(filter(identity, props))
-
-    if widget_data['name'] == 'MenuItem':
-        props.append(('value', {'type': 'any', 'allowNull': True, 'default': None}))
 
     if parent:
         print(f"inherit: {parent}")
