@@ -8,29 +8,21 @@ import * as React from 'react';
 import Icon from "@material-ui/core/Icon";
 import * as icons from "@material-ui/icons";
 
-class BackboneWidget extends React.Component {
-    constructor(props) {
-        super(props);
-        console.log('got props', props.model.get('_model_name'), props, props.model.attributes);
-        const model = this.props.model;
-        console.log('constructror', model.get('_model_name'));
+function listModels(value) {
+    if (value instanceof ReactWidgetModel) {
+        const childModels = _.flatten(value.values().map(v => listModels(v))).filter(_.identity);
+        return [value].concat(childModels);
+    } else if (Array.isArray(value)) {
+        return _.flatten(value.map(v => listModels(v))).filter(_.identity);
     }
+}
 
-    componentDidMount() {
-        this.updateCallback = (...args) => {
-            this.forceUpdate();
-        };
-        this.props.model.on('change', this.updateCallback)
-    }
-
+class TopComponent extends React.Component {
     componentWillUnmount() {
-        this.props.model.off('change', this.updateCallback)
+        (this.allModels || []).forEach(model => model.off('change', this.updateCallback));
     }
 
-    render() {
-        const model = this.props.model;
-        console.log(`rendering model: ${model.get('_model_name')}`);
-
+    makeProps(model, ancestors) {
         const snakeToCamel = (s) => {
             let result = s.replace(/_$/, '');
             if (result.startsWith('aria')) {
@@ -40,33 +32,48 @@ class BackboneWidget extends React.Component {
             return result;
         };
 
+        const hasAncestor = (name) => ancestors.map(m => m.name).some(n => n === name);
+
         const childProps = model.keys()
             .filter(k => !k.startsWith('_') && k !== 'layout' && model.get(k) != null)
             .reduce((accumulator, key) => {
                 let v
                 if (key === 'anchor_el') {
                     v = document.querySelector(`[cid=${model.get(key).cid}]`)
-                } else if (key === 'value') {
+                } else if (key === 'value') { // value can be a widgetModel, we don't want to convert it to a react component
                     v = model.get(key);
                 } else {
-                    v = replaceModels(model.get(key));
+                    v = this.convertModels(model.get(key), ancestors.concat(model));
                 }
                 return {...accumulator, [snakeToCamel(key)]: v}
             }, {});
 
         if (model.keys().includes('checked')) {
-            childProps['onChange'] = (e, checked) => {
-                model.set('checked', checked);
-                model.save_changes();
+            const dontUseChecked = 
+                (model.name === 'RadioModel' && hasAncestor('RadioGroupModel')) ||
+                (model.name === 'FormControlLabelModel' && hasAncestor('RadioGroupModel'));
+            if (!dontUseChecked) {
+                childProps['onChange'] = (e, checked) => {
+                    model.set('checked', checked);
+                    model.save_changes();
+                }
+            }
+        } else if (model.keys().includes('selected')) {
+            const dontUseSelected = model.name === 'ToggleButtonModel' && hasAncestor('ToggleButtonGroupModel');
+            if(!dontUseSelected) {
+                childProps['onChange'] = (e, value) => {
+                    model.set('selected', !model.get('selected'));
+                    model.save_changes();
+                }
             }
         } else if (model.keys().includes('value')) {
             childProps['onChange'] = (e, value) => {
-                console.log("value", value, e);
-                if (React.isValidElement(value) || value === undefined) {
-                    console.log('target', e.target.value);
+                if (e.target && e.target.value !== undefined && !['ToggleButtonGroupModel', 'TabsModel'].includes(model.name)) {
                     model.set('value', e.target.value);
                 } else {
-                    model.set('value', value);
+                    if (value !== undefined) {
+                        model.set('value', value);
+                    }
                 }
                 model.save_changes();
             }
@@ -74,11 +81,9 @@ class BackboneWidget extends React.Component {
 
         (model.get('_events') || [])
             .forEach(eventStr => {
-                console.log('adding events', eventStr);
                 const [event, ...modifiers] = eventStr.split('|').map(s => s.trim());
                 const existingFn = childProps[event];
                 childProps[event] = (e, ...args) => {
-                    console.log(e, args);
                     if (modifiers.includes('preventDefault')) {
                         e.preventDefault();
                     }
@@ -88,48 +93,46 @@ class BackboneWidget extends React.Component {
                     model.send({ event, data: args});
                 }
             });
+        childProps['key'] = model.cid;
+        childProps['cid'] = model.cid;
 
-        const newProps = _.merge(childProps, _.omit(this.props, 'model'));
-        console.log('newProps', newProps);
+        return childProps;
+    }
 
-        let comp = model.getReactComponent ? model.getReactComponent() : model.get('tag');
-        if (comp === Icon) {
-            comp = icons[model.get('children')];
+    convertModels(value, ancestors) {
+        if (value instanceof ReactWidgetModel) {
+            let comp = value.getReactComponent ? value.getReactComponent() : value.get('tag');
+            if (comp === Icon) {
+                comp = icons[value.get('children')];
+            }
+            return React.createElement(comp, this.makeProps(value, ancestors));
         }
-
-        return React.createElement(
-            comp,
-            newProps)
+        if (Array.isArray(value)) {
+            return value.map(e => this.convertModels(e, ancestors));
+        }
+        return value;
     }
-}
 
-function replaceModels(value) {
-    if (Array.isArray(value)) {
-        return value.map(e => replaceModels(e));
-    } else if (value instanceof ReactWidgetModel) {
-        return wrapBackbone(value);
+    render() {
+        if (!this.updateCallback) {
+            this.updateCallback = () => this.forceUpdate();
+        }
+        (this.allModels || []).forEach(model => model.off('change', this.updateCallback));
+        this.allModels = listModels(this.props.model);
+        this.allModels.forEach(model => model.on('change', this.updateCallback));
+
+        return this.convertModels(this.props.model, []);
     }
-    return value;
-}
-
-function wrapBackbone(model) {
-    return React.createElement(BackboneWidget, {
-        model,
-        key: model.cid,
-        cid: model.cid,
-        ...['ToggleButtonModel', 'MenuItemModel', 'TabModel'].includes(model.name) && {value: model.get('value')},
-        ...['MenuItemModel'].includes(model.name) && {children: replaceModels(model.get('children'))},
-    });
 }
 
 export class ReactView extends DOMWidgetView {
     render() {
         super.render();
-        console.log('render2', this.model.get('_model_name'));
         const el = document.createElement('div');
-        const model = this.model;
         ReactDOM.render(
-            styleWrapper(wrapBackbone(model)),
+            styleWrapper(
+                React.createElement(TopComponent, {model: this.model})
+            ),
             el);
         this.el.appendChild(el);
     }
