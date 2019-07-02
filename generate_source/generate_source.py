@@ -20,10 +20,10 @@ python_template = f'{here}/python.njk'
 python_lab_template = f'{here}/python_lab.njk'
 
 project_dir = f'{here}/..'
-destination_js = f'{project_dir}/js/src/v2/generated'
-destination_lab_js = f'{project_dir}/js/src/v2/generated_lab'
-destination_python = f'{project_dir}/ipymaterialui/v2/generated'
-destination_lab_python = f'{project_dir}/ipymaterialui/v2/generated_lab'
+destination_js = f'{project_dir}/js/src/generated'
+destination_lab_js = f'{project_dir}/js/src/generated_lab'
+destination_python = f'{project_dir}/ipymaterialui/generated'
+destination_lab_python = f'{project_dir}/ipymaterialui/generated_lab'
 
 
 def reset_dir(name):

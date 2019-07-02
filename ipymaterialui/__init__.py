@@ -1,9 +1,8 @@
 from ._version import version_info, __version__
 
-#from .core import *
-from .v2.Html import (Html, divjslink)
-from .v2.generated import *
-from .v2.generated_lab import *
+from .Html import (Html, divjslink)
+from .generated import *
+from .generated_lab import *
 
 def _jupyter_nbextension_paths():
     return [{

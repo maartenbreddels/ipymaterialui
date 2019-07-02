@@ -1,6 +1,6 @@
 import { DOMWidgetView} from '@jupyter-widgets/base';
 import * as ReactDOM from "react-dom";
-import {styleWrapper} from "../style_wrap_notebook";
+import {styleWrapper} from "./style_wrap";
 import {ReactWidgetModel} from './generated/ReactWidget'
 import _ from 'lodash'
 
