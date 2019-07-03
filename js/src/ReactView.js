@@ -8,15 +8,6 @@ import * as React from 'react';
 import Icon from "@material-ui/core/Icon";
 import * as icons from "@material-ui/icons";
 
-function listModels(value) {
-    if (value instanceof ReactWidgetModel) {
-        const childModels = _.flatten(value.values().map(v => listModels(v))).filter(_.identity);
-        return [value].concat(childModels);
-    } else if (Array.isArray(value)) {
-        return _.flatten(value.map(v => listModels(v))).filter(_.identity);
-    }
-}
-
 class TopComponent extends React.Component {
     componentWillUnmount() {
         (this.allModels || []).forEach(model => model.off('change', this.updateCallback));
@@ -113,12 +104,21 @@ class TopComponent extends React.Component {
         return value;
     }
 
+    listModels(value) {
+        if (value instanceof ReactWidgetModel) {
+            const childModels = _.flatten(value.values().map(v => this.listModels(v))).filter(_.identity);
+            return [value].concat(childModels);
+        } else if (Array.isArray(value)) {
+            return _.flatten(value.map(v => this.listModels(v))).filter(_.identity);
+        }
+    }
+
     render() {
         if (!this.updateCallback) {
             this.updateCallback = () => this.forceUpdate();
         }
         (this.allModels || []).forEach(model => model.off('change', this.updateCallback));
-        this.allModels = listModels(this.props.model);
+        this.allModels = this.listModels(this.props.model);
         this.allModels.forEach(model => model.on('change', this.updateCallback));
 
         return this.convertModels(this.props.model, []);
