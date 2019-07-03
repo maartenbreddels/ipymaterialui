@@ -49,7 +49,7 @@ class TopComponent extends React.Component {
             .reduce((accumulator, key) => {
                 let v
                 if (key === 'anchor_el') {
-                    v = document.querySelector(`[cid=${model.get(key).cid}]`)
+                    v = document.querySelector(`[cid=${this.props.view.cid}${model.get(key).cid}]`)
                 } else if (key === 'value') { // value can be a widgetModel, we don't want to convert it to a react component
                     v = model.get(key);
                 } else {
@@ -104,7 +104,7 @@ class TopComponent extends React.Component {
                 }
             });
         childProps['key'] = model.cid;
-        childProps['cid'] = model.cid;
+        childProps['cid'] = this.props.view.cid + model.cid;
 
         return childProps;
     }
