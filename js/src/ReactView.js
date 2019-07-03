@@ -1,4 +1,4 @@
-import { DOMWidgetView} from '@jupyter-widgets/base';
+import { DOMWidgetModel, DOMWidgetView, JupyterPhosphorWidget } from '@jupyter-widgets/base';
 import * as ReactDOM from "react-dom";
 import {styleWrapper} from "./style_wrap";
 import {ReactWidgetModel} from './generated/ReactWidget'
@@ -7,6 +7,25 @@ import _ from 'lodash'
 import * as React from 'react';
 import Icon from "@material-ui/core/Icon";
 import * as icons from "@material-ui/icons";
+
+class WidgetComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.el = React.createRef();
+    }
+
+    componentDidMount() {
+        const viewPromise = this.props.view.create_child_view(this.props.model);
+        viewPromise.then(view => setTimeout(
+            () => JupyterPhosphorWidget.attach(view.pWidget, this.el.current),
+            0
+        ));
+    }
+
+    render() {
+        return <div ref={this.el}/>
+    }
+}
 
 class TopComponent extends React.Component {
     componentWillUnmount() {
@@ -98,6 +117,9 @@ class TopComponent extends React.Component {
             }
             return React.createElement(comp, this.makeProps(value, ancestors));
         }
+        if (value instanceof DOMWidgetModel) {
+            return React.createElement(WidgetComponent, {model: value, key: value.cid, view: this.props.view});
+        }
         if (Array.isArray(value)) {
             return value.map(e => this.convertModels(e, ancestors));
         }
@@ -131,7 +153,7 @@ export class ReactView extends DOMWidgetView {
         const el = document.createElement('div');
         ReactDOM.render(
             styleWrapper(
-                React.createElement(TopComponent, {model: this.model})
+                React.createElement(TopComponent, {model: this.model, view: this})
             ),
             el);
         this.el.appendChild(el);
