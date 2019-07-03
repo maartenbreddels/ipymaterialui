@@ -24,7 +24,11 @@ def property_to_snake_case(name):
     if name.startswith('aria'):
         return name.replace('-', '_')
 
-    return re.sub('(?!^)([A-Z]+)', r'_\1', name).lower()
+    result = re.sub('(?!^)([A-Z]+)', r'_\1', name).lower()
+    if name[0].isupper():
+        result = result.capitalize()
+
+    return result
 
 def make_type(type_content, name='bla'):
     type_ = type_content['name']
