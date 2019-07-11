@@ -7,6 +7,7 @@ from subprocess import check_call
 import os
 import sys
 import platform
+import glob
 
 from generate_source import generate
 
@@ -151,9 +152,7 @@ setup_args = {
     'include_package_data': True,
     'data_files': [
         ('share/jupyter/nbextensions/jupyter-materialui', [
-            'ipymaterialui/static/extension.js',
-            'ipymaterialui/static/index.js',
-            'ipymaterialui/static/index.js.map',
+            glob.glob('ipymaterialui/static/*'),
         ],),
         ('etc/jupyter/nbconfig/notebook.d/' ,['jupyter-materialui.json'])
     ],

@@ -7,7 +7,7 @@ var rules = [
     { test: /\.css$/, use: ['style-loader', 'css-loader']},
     {
           test: /\.(woff|woff2|eot|ttf|svg)$/,
-          loader: 'file?name=fonts/[name].[ext]'
+          loader: 'file-loader',
     },
     {
         test: /\.js$/,
@@ -41,7 +41,7 @@ module.exports = [
      // custom widget.
      // It must be an amd module
      //
-        entry: './src/index.js',
+        entry: './src/notebook.js',
         output: {
             filename: 'index.js',
             path: path.resolve(__dirname, '..', 'ipymaterialui', 'static'),
