@@ -5,8 +5,6 @@ import {ReactWidgetModel} from './generated/ReactWidget'
 import _ from 'lodash'
 
 import * as React from 'react';
-import Icon from "@material-ui/core/Icon";
-import * as icons from "@material-ui/icons";
 
 class WidgetComponent extends React.Component {
     constructor(props) {
@@ -112,9 +110,6 @@ class TopComponent extends React.Component {
     convertModels(value, ancestors) {
         if (value instanceof ReactWidgetModel) {
             let comp = value.getReactComponent ? value.getReactComponent() : value.get('tag');
-            if (comp === Icon) {
-                comp = icons[value.get('children')];
-            }
             return React.createElement(comp, this.makeProps(value, ancestors));
         }
         if (value instanceof DOMWidgetModel) {
