@@ -1,4 +1,4 @@
-let version = "0.1.0";
+export const { version } = require('../package.json');
 import 'typeface-roboto';
 export {ReactView} from './ReactView'
 export {HtmlModel} from './Html'

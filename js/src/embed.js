@@ -6,5 +6,3 @@
 
 // Export widget models and views, and the npm package version number.
 export * from './index'
-let version = "0.1.0";
-
