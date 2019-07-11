@@ -1,4 +1,4 @@
-import { DOMWidgetModel, DOMWidgetView, JupyterPhosphorWidget } from '@jupyter-widgets/base';
+import { DOMWidgetView, JupyterPhosphorWidget, WidgetModel } from '@jupyter-widgets/base';
 import * as ReactDOM from "react-dom";
 import {styleWrapper} from "./style_wrap";
 import {ReactWidgetModel} from './generated/ReactWidget'
@@ -112,7 +112,7 @@ class TopComponent extends React.Component {
             let comp = value.getReactComponent ? value.getReactComponent() : value.get('tag');
             return React.createElement(comp, this.makeProps(value, ancestors));
         }
-        if (value instanceof DOMWidgetModel) {
+        if (value instanceof WidgetModel) {
             return React.createElement(WidgetComponent, {model: value, key: value.cid, view: this.props.view});
         }
         if (Array.isArray(value)) {
