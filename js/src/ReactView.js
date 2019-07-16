@@ -70,7 +70,7 @@ class TopComponent extends React.Component {
             if (!dontUseChecked) {
                 childProps.onChange = (e, checked) => {
                     model.set('checked', checked);
-                    model.save_changes();
+                    model.save_changes(model.callbacks(view));
                 };
             }
         } else if (model.keys().includes('selected')) {
@@ -78,7 +78,7 @@ class TopComponent extends React.Component {
             if (!dontUseSelected) {
                 childProps.onChange = () => {
                     model.set('selected', !model.get('selected'));
-                    model.save_changes();
+                    model.save_changes(model.callbacks(view));
                 };
             }
         } else if (model.keys().includes('value')) {
@@ -88,7 +88,7 @@ class TopComponent extends React.Component {
                 } else if (value !== undefined) {
                     model.set('value', value);
                 }
-                model.save_changes();
+                model.save_changes(model.callbacks(view));
             };
         }
 
@@ -103,7 +103,7 @@ class TopComponent extends React.Component {
                     if (existingFn) {
                         existingFn(e, ...args);
                     }
-                    model.send({ event, data: args });
+                    model.send({ event, data: args }, model.callbacks(view));
                 };
             });
         childProps.key = model.cid;
