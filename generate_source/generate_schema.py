@@ -46,13 +46,43 @@ def make_type(type_content, name='bla'):
         type_ = 'object'
     if type_ == 'number':
         type_ = 'float'
-    if type_ == 'custom' and 'raw' in type_content.keys() and type_content['raw'].startswith(
-            'chainPropTypes(PropTypes.node'):
-        type_ = 'node'
+    if type_ == 'custom' and 'raw' in type_content.keys():
+        raw = type_content['raw']
+        if raw == 'unsupportedProp':
+            return None
+        if raw.startswith('chainPropTypes(PropTypes.string'):
+            type_ = 'string'
+        if raw.startswith('chainPropTypes(PropTypes.bool'):
+            type_ = 'boolean'
+        if raw.startswith('chainPropTypes(PropTypes.number'):
+            type_ = 'float'
+        if raw.startswith('chainPropTypes(PropTypes.node'):
+            type_ = 'node'
 
     if type_ in ['string', 'float', 'object', 'boolean']:
         return {
             'type': type_,
+            'allowNull': True,
+            'default': None
+        }
+
+    if type_ == 'array':
+        return {
+            'type': 'array',
+            'items': {
+                'type': 'any'
+            },
+            'allowNull': True,
+            'default': None
+        }
+
+    if type_ == 'arrayOf':
+        array_type = 'float' if type_content['value']['name'] == 'number' else 'any'
+        return {
+            'type': 'array',
+            'items': {
+                'type': array_type
+            },
             'allowNull': True,
             'default': None
         }
