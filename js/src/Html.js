@@ -1,5 +1,5 @@
-import { ReactWidgetModel } from './generated/ReactWidget';
 import { unpack_models } from '@jupyter-widgets/base';
+import { ReactWidgetModel } from './generated/ReactWidget';
 
 export class HtmlModel extends ReactWidgetModel {
     defaults() {

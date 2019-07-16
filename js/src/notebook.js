@@ -1,2 +1,3 @@
-import './public-path'
+import './public-path';
+
 export * from './index';

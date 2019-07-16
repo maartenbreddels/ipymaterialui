@@ -17,6 +17,7 @@
   ],
   "files": [
     "lib/**/*",
+    "src/",
     "dist/"
   ],
   "scripts": {
@@ -24,7 +25,8 @@
     "prepare": "npm run build:lib && webpack",
     "build:lib": "babel src --out-dir lib --copy-files",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "webpack --mode development --watch"
+    "watch": "webpack --mode development --watch",
+    "lint": "eslint src/**/*.js src/**/*.jsx"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -34,6 +36,11 @@
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
     "css-loader": "^1.0.1",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.1",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.2",
     "file-loader": "^3.0.1",
     "rimraf": "^2.6.1",
     "style-loader": "^0.23.1",
@@ -46,6 +53,7 @@
     "@material-ui/lab": "^4.0.0-alpha.16",
     "lodash": "^4.17.4",
     "material-design-icons-iconfont": "^5.0.1",
+    "prop-types": "^15.7.2",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "typeface-roboto": "0.0.54"

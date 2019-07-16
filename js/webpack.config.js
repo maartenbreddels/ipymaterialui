@@ -10,7 +10,7 @@ var rules = [
           loader: 'file-loader',
     },
     {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader"
@@ -52,7 +52,7 @@ module.exports = [
             rules: rules
         },
         resolve: {
-            alias: {'./style_wrap': path.resolve(__dirname, 'src/style_wrap_notebook.js')},
+            alias: {'./style_wrap': path.resolve(__dirname, 'src/style_wrap_notebook.jsx')},
         },
         externals: ['@jupyter-widgets/base']
     },

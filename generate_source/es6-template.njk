@@ -10,22 +10,18 @@
 {% for widget in widgets %}
 {% block widget %}
 {% if widget.name === "ReactWidget" %}
-import {
-    DOMWidgetModel, unpack_models,
-} from '@jupyter-widgets/base';
+import { DOMWidgetModel } from '@jupyter-widgets/base';
 {% else %}
 {% if outputMultiple %}
+import { unpack_models } from '@jupyter-widgets/base'; // eslint-disable-line no-unused-vars
+import {{ widget.name }} from '@material-ui/core/{%- if widget.name === "TouchRipple" %}
+ButtonBase/{% endif -%}{{ widget.name }}';
 {% for ref in widgets[0].localDependencies if ref !== "ReactWidgetModel" %}
 import { {{ ref }}Model } from './{{ ref }}';
 {% endfor %}
-import { unpack_models } from '@jupyter-widgets/base';
 {% endif %}
 {% endif %}
 
-{% if widget.name !== "ReactWidget" %}
-import {{ widget.name }} from '@material-ui/core/{%- if widget.name === "TouchRipple" %}
-ButtonBase/{% endif -%}{{ widget.name }}';
-{% endif %}
 export class {{ widget.name }}Model extends {{ widget.inherits[0] }}Model {
 {% block widgetbody %}
     defaults() {

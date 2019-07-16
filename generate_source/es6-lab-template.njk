@@ -19,13 +19,11 @@ import {
 import { {{ ref }}Model } from './{{ ref }}';
 {% endfor %}
 import { unpack_models } from '@jupyter-widgets/base';
+import {{ widget.name }} from '@material-ui/lab/{{ widget.name }}';
 import { ReactWidgetModel } from '../generated/ReactWidget';
 {% endif %}
 {% endif %}
 
-{% if widget.name !== "ReactWidget" %}
-import {{ widget.name }} from '@material-ui/lab/{{ widget.name }}';
-{% endif %}
 export class {{ widget.name }}Model extends {{ widget.inherits[0] }}Model {
 {% block widgetbody %}
     defaults() {

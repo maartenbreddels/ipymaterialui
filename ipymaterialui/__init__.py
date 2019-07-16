@@ -1,8 +1,8 @@
-from ._version import version_info, __version__
+from ._version import version_info, __version__  # noqa: F401
+from .Html import (Html, divjslink)  # noqa: F401
+from .generated import *  # noqa: F401, F403
+from .generated_lab import *  # noqa: F401, F403
 
-from .Html import (Html, divjslink)
-from .generated import *
-from .generated_lab import *
 
 def _jupyter_nbextension_paths():
     return [{

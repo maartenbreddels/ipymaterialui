@@ -1,16 +1,15 @@
-var jupyter_materialui = require('./index');
-var base = require('@jupyter-widgets/base');
+const base = require('@jupyter-widgets/base');
+const jupyterMaterialui = require('./index');
 
 module.exports = {
     id: 'jupyter-materialui',
     requires: [base.IJupyterWidgetRegistry],
-    activate: function (app, widgets) {
+    activate(app, widgets) {
         widgets.registerWidget({
             name: 'jupyter-materialui',
-            version: jupyter_materialui.version,
-            exports: jupyter_materialui
+            version: jupyterMaterialui.version,
+            exports: jupyterMaterialui,
         });
     },
-    autoStart: true
+    autoStart: true,
 };
-

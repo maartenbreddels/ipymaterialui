@@ -49,21 +49,21 @@ def generate():
 
     reset_dir(destination_lab_js)
     subprocess.check_call(
-        f'{widgetgen} -p json -o {destination_lab_js} -t {es6_lab_template} {widget_gen_lab_schema} es6',
+        (f'{widgetgen} -p json -o {destination_lab_js} -t {es6_lab_template} '
+         f'{widget_gen_lab_schema} es6'),
         shell=True)
 
+    def create_eslintrc(dir):
+        with open(f'{dir}/.eslintrc.js', 'w') as f:
+            f.write('module.exports = {\n'
+                    '   rules: {\n'
+                    "       camelcase: 'off',\n"
+                    "       quotes: 'off'\n"
+                    '   },\n'
+                    '};\n')
 
-    with open(f'{destination_js}/.eslintrc.js', 'w') as f:
-        f.write('''
-            module.exports = {
-                rules: {
-                    camelcase: 'off',
-                    quotes: 'off'
-                },
-                "allowNull": True,
-                "default": None
-            };
-        ''')
+    create_eslintrc(destination_js)
+    create_eslintrc(destination_lab_js)
 
     reset_dir(destination_python)
     subprocess.check_call(
