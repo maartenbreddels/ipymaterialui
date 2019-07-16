@@ -4,7 +4,6 @@ import subprocess
 from .generate_schema import generate_schema
 
 here = os.path.dirname(os.path.abspath(__file__))
-print(f'[here]')
 materialui_core_api = f'{here}/core_api.json'
 materialui_lab_api = f'{here}/lab_api.json'
 base_schema = f'{here}/base.json'
@@ -76,6 +75,3 @@ def generate():
         f'{widgetgen} -p json -o {destination_lab_python} -t {python_lab_template} '
         f'{widget_gen_lab_schema} python',
         shell=True)
-
-
-generate()

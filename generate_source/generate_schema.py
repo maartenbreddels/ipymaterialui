@@ -32,7 +32,7 @@ def property_to_snake_case(name):
     return result
 
 
-def make_type(type_content, name='bla'):
+def make_type(type_content):
     type_ = type_content['name']
     types.add(type_)
 
@@ -164,7 +164,7 @@ def make_prop(prop_data):
             'default': None
         }
     else:
-        type_ = make_type(content['type'], name)
+        type_ = make_type(content['type'])
 
     if type_ is None:
         return None
