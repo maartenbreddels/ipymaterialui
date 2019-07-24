@@ -10,6 +10,11 @@ import parseTest from '../src/modules/utils/parseTest';
 import createMuiTheme from '../../packages/material-ui/src/styles/createMuiTheme';
 import getStylesCreator from '../../packages/material-ui-styles/src/getStylesCreator';
 
+/*
+ * Copied from https://github.com/mui-org/material-ui/blob/master/docs/scripts/buildApi.js and
+ * adapted to output a json schema of the API instead of documentation.
+ */
+
 // Read the command-line args
 const args = process.argv;
 

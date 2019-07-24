@@ -1,13 +1,15 @@
 import os
 import shutil
 import subprocess
+import fileinput
+import json
 from .generate_schema import generate_schema
 
 here = os.path.dirname(os.path.abspath(__file__))
-materialui_core_api = f'{here}/core_api.json'
-materialui_lab_api = f'{here}/lab_api.json'
 base_schema = f'{here}/base.json'
 build_dir = f'{here}/build'
+materialui_core_api = f'{build_dir}/core_api.json'
+materialui_lab_api = f'{build_dir}/lab_api.json'
 widget_gen_schema = f'{build_dir}/widget_gen_schema.json'
 widget_gen_lab_schema = f'{build_dir}/widget_gen_lab_schema.json'
 
@@ -32,9 +34,47 @@ def reset_dir(name):
     os.mkdir(name)
 
 
+def generate_materialui_api():
+    subprocess.check_call(f'npm install --package-lock-only', cwd=f'{here}/../js', shell=True)
+
+    src = f'{build_dir}/material-ui'
+    package = json.loads(open(f'{here}/../js/package-lock.json').read())
+    version = package['dependencies']['@material-ui/core']['version'].replace('^', '')
+
+    if not os.path.isdir(src):
+        subprocess.check_call(
+            f'git clone https://github.com/mui-org/material-ui.git {src}',
+            shell=True)
+
+    for cmd in ['git reset --hard HEAD',
+                'git fetch',
+                f'git checkout tags/v{version}',
+                'yarn']:
+        subprocess.check_call(cmd, cwd=f'{src}', shell=True)
+
+    shutil.copy2(f'{here}/buildApiJson.js', f'{src}/docs/scripts/')
+
+    script_name = 'gen_api_json'
+
+    for line in fileinput.input(f'{src}/package.json', inplace=1):
+        cmd = 'cross-env BABEL_ENV=test babel-node ./docs/scripts/buildApiJson.js'
+        marker = '"scripts": {'
+        if marker in line:
+            print(f'{marker}\n    "{script_name}": "'
+                  f'{cmd} ./packages/material-ui/src {materialui_core_api} && '
+                  f'{cmd} ./packages/material-ui-lab/src {materialui_lab_api}",')
+        else:
+            print(line, end='')
+
+    subprocess.check_call('yarn', cwd=src, shell=True)
+    subprocess.check_call(f'npm run {script_name}', cwd=src, shell=True)
+
+
 def generate():
     if not os.path.isdir(build_dir):
         os.mkdir(build_dir)
+
+    generate_materialui_api()
 
     generate_schema(materialui_core_api, base_schema, widget_gen_schema)
     generate_schema(materialui_lab_api, None, widget_gen_lab_schema)
