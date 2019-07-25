@@ -9,13 +9,6 @@ var rules = [
           test: /\.(woff|woff2|eot|ttf|svg)$/,
           loader: 'file-loader',
     },
-    {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader"
-        }
-    }    
 ]
 
 
@@ -28,7 +21,7 @@ module.exports = [
      // "load_ipython_extension" function which is required for any notebook
      // extension.
      //
-        entry: './src/extension.js',
+        entry: './lib/extension.js',
         output: {
             filename: 'extension.js',
             path: path.resolve(__dirname, '..', 'ipymaterialui', 'static'),
@@ -41,7 +34,7 @@ module.exports = [
      // custom widget.
      // It must be an amd module
      //
-        entry: './src/notebook.js',
+        entry: './lib/notebook.js',
         output: {
             filename: 'index.js',
             path: path.resolve(__dirname, '..', 'ipymaterialui', 'static'),
@@ -52,7 +45,7 @@ module.exports = [
             rules: rules
         },
         resolve: {
-            alias: {'./style_wrap': path.resolve(__dirname, 'src/style_wrap_notebook.jsx')},
+            alias: {'./style_wrap': path.resolve(__dirname, 'lib/style_wrap_notebook.js')},
         },
         externals: ['@jupyter-widgets/base']
     },
@@ -70,7 +63,7 @@ module.exports = [
      // The target bundle is always `dist/index.js`, which is the path required
      // by the custom widget embedder.
      //
-        entry: './src/embed.js',
+        entry: './lib/embed.js',
         output: {
             filename: 'index.js',
             path: path.resolve(__dirname, 'dist'),
