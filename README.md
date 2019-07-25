@@ -57,7 +57,7 @@ Examples
 
 This example demonstrates aspect 1, 2, 3, 4, 6, 8 and 9 of the table above. 
 
-![materialui-button.gif](./materiaui-button.gif)
+![materiaui-button](https://user-images.githubusercontent.com/46192475/61886271-aafb4c00-aeff-11e9-86cc-fd1e0d228e60.gif)
 
 #### React/Material-UI 
 ```typescript jsx
@@ -110,7 +110,7 @@ button
 
 This example demonstrates aspect 5 of the table above.
 
-![materialui-switch.gif](./materiaui-switch.gif)
+![materiaui-switch](https://user-images.githubusercontent.com/46192475/61886282-b0f12d00-aeff-11e9-91c5-060eabc7fb4f.gif)
 
 #### React/Material-UI 
 ```typescript jsx
