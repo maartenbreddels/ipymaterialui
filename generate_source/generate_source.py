@@ -66,7 +66,6 @@ def generate_materialui_api():
         else:
             print(line, end='')
 
-    subprocess.check_call('yarn', cwd=src, shell=True)
     subprocess.check_call(f'npm run {script_name}', cwd=src, shell=True)
 
 
