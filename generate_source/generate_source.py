@@ -50,7 +50,7 @@ def generate_materialui_api():
                 'git fetch',
                 f'git checkout tags/v{version}',
                 'yarn']:
-        subprocess.check_call(cmd, cwd=f'{src}', shell=True)
+        subprocess.check_call(cmd, cwd=src, shell=True)
 
     shutil.copy2(f'{here}/buildApiJson.js', f'{src}/docs/scripts/')
 
