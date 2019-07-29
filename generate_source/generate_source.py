@@ -49,7 +49,7 @@ def generate_materialui_api():
     for cmd in ['git reset --hard HEAD',
                 'git fetch',
                 f'git checkout tags/v{version}',
-                'yarn']:
+                f'{here}/node_modules/.bin/yarn']:
         subprocess.check_call(cmd, cwd=src, shell=True)
 
     shutil.copy2(f'{here}/buildApiJson.js', f'{src}/docs/scripts/')
@@ -73,12 +73,12 @@ def generate():
     if not os.path.isdir(build_dir):
         os.mkdir(build_dir)
 
+    subprocess.check_call('npm install', cwd=here, shell=True)
+
     generate_materialui_api()
 
     generate_schema(materialui_core_api, base_schema, widget_gen_schema)
     generate_schema(materialui_lab_api, None, widget_gen_lab_schema)
-
-    subprocess.check_call('npm install', cwd=here, shell=True)
 
     reset_dir(destination_js)
     subprocess.check_call(

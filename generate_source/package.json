@@ -3,6 +3,7 @@
   "repository": "_",
   "license": "MIT",
   "devDependencies": {
-    "widget-gen": "git+https://github.com/mariobuikhuizen/widget-gen.git#workarounds"
+    "widget-gen": "git+https://github.com/mariobuikhuizen/widget-gen.git#workarounds",
+    "yarn": "^1.17.3"
   }
 }
