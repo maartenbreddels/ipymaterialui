@@ -164,13 +164,11 @@ TopComponent.propTypes = {
 export class ReactView extends DOMWidgetView {
     render() {
         super.render();
-        const el = document.createElement('div');
         ReactDOM.render(
             styleWrapper(
                 React.createElement(TopComponent, { model: this.model, view: this }),
             ),
-            el,
+            this.el,
         );
-        this.el.appendChild(el);
     }
 }
