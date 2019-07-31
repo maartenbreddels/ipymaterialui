@@ -41,7 +41,7 @@ Material-UI API, but the syntax is different:
 |2| Child components and text are defined in the children traitlet| `<Button>text <Icon .../></Button>` | `Button(children=['text', Icon(...)])` |
 |3| Flag attributes require a boolean value | `<Container fixed ...` | `Container(fixed=True ...` |
 |4| Attributes are snake_case | `<Button fullWidth ..` | `Button(full_width=True ...` |
-|5| No onChange handler necessary, just use the traitlet. This is not always `value` like in ipywidgets (e.g. checked or selected) | `<Switch onChange="...` | `mySwitch.checked` |
+|5| No onChange handler necessary, use [observe](https://traitlets.readthedocs.io/en/stable/using_traitlets.html#observe). Note that the main value is not always `value` like in ipywidgets (e.g. checked or selected) | `<Switch onChange="..."` | `mySwitch.checked` |
 |6| Event listeners are defined with on_event | `<Button onClick={someMethod}' ...` | `button.on_event('onClick', some_method)` |
 | | | | `def some_method(widget, event, data):` |
 |7| Regular HTML tags can made with the Html class | `<div>...</div>` | `Html(tag='div', children=[...])` |
