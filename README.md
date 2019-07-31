@@ -28,7 +28,7 @@ For a development installation (requires npm),
 Usage
 -----
 
-For examples see the [example notebook](Core examples.ipynb).
+For examples see the [example notebook](Core%20examples.ipynb).
 
 The [Material-UI documentation](https://material-ui.com/components/buttons/) can be used to find all available 
 components and attributes (on the left side bar). Click the <> icon to see the source code of the examples. Scroll to 
