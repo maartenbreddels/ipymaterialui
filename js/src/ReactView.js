@@ -15,10 +15,12 @@ class WidgetComponent extends React.Component {
     async componentDidMount() {
         const { model, view } = this.props;
         const childView = await view.create_child_view(model);
-        setTimeout(
-            () => JupyterPhosphorWidget.attach(childView.pWidget, this.el.current),
-            0,
-        );
+        /* JupyterPhosphorWidget.attach() expects this.el.current to be attached to the DOM. This
+         * requires the view to be attached to the DOM. This is the case after view.displayed is
+         * resolved.
+         */
+        await view.displayed;
+        JupyterPhosphorWidget.attach(childView.pWidget, this.el.current);
     }
 
     render() {
