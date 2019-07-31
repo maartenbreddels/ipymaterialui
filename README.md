@@ -13,7 +13,6 @@ Prerequisites:
 To install use pip:
 
     $ pip install ipymaterialui
-    $ jupyter nbextension enable --py --sys-prefix ipymaterialui  # for notebook
     $ jupyter labextension install jupyter-materialui             # for lab
 
 
