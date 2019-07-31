@@ -169,8 +169,8 @@ setup_args = {
         'generate_source': GenerateSource,
     },
 
-    'author': 'Maarten A. Breddels',
-    'author_email': 'maartenbreddels@gmail.com',
+    'author': 'Maarten A. Breddels, Mario Buikhuizen',
+    'author_email': 'maartenbreddels@gmail.com, mariobuikhuizen@gmail.com',
     'url': 'https://github.com/maartenbreddels/ipymaterialui',
     'keywords': [
         'ipython',
