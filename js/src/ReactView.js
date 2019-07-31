@@ -12,13 +12,13 @@ class WidgetComponent extends React.Component {
         this.el = React.createRef();
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const { model, view } = this.props;
-        const viewPromise = view.create_child_view(model);
-        viewPromise.then(childView => setTimeout(
+        const childView = await view.create_child_view(model);
+        setTimeout(
             () => JupyterPhosphorWidget.attach(childView.pWidget, this.el.current),
             0,
-        ));
+        );
     }
 
     render() {
