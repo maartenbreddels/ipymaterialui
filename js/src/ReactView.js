@@ -35,6 +35,13 @@ WidgetComponent.propTypes = {
 };
 
 class TopComponent extends React.Component {
+    constructor(props) {
+        super(props);
+
+        /* Use an arrow function instead of a method to maintain a reference to this */
+        this.updateCallback = () => this.forceUpdate();
+    }
+
     componentWillUnmount() {
         (this.allModels || []).forEach(model => model.off('change', this.updateCallback));
     }
@@ -165,9 +172,6 @@ class TopComponent extends React.Component {
     }
 
     render() {
-        if (!this.updateCallback) {
-            this.updateCallback = () => this.forceUpdate();
-        }
         (this.allModels || []).forEach(m => m.off('change', this.updateCallback));
         const { model } = this.props;
         this.allModels = this.listModels(model);
