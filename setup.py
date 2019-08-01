@@ -9,6 +9,7 @@ import sys
 import platform
 import glob
 from distutils import log
+import json
 
 from generate_source import generate
 
@@ -25,6 +26,17 @@ log.info('setup.py entered')
 log.info('$PATH=%s' % os.environ['PATH'])
 
 LONG_DESCRIPTION = 'Modern form/ui elements for Jupyter Widgets'
+
+
+def get_data_files():
+    with open(os.path.join('js', 'package.json')) as f:
+        package_json = json.load(f)
+    tgz = '%s-%s.tgz' % (package_json['name'], package_json['version'])
+    return [
+        ('share/jupyter/nbextensions/jupyter-materialui',  glob.glob('ipymaterialui/static/*')),
+        ('etc/jupyter/nbconfig/notebook.d', ['jupyter-materialui.json']),
+        ('share/jupyter/lab/extensions', ['js/' + tgz])
+    ]
 
 
 def js_prerelease(command, strict=False):
@@ -51,14 +63,14 @@ def js_prerelease(command, strict=False):
                     log.warn('rebuilding js and css failed (not a problem)')
                     log.warn(str(e))
             command.run(self)
-            update_package_data(self.distribution)
+            update_data_files(self.distribution)
     return DecoratedCommand
 
 
-def update_package_data(distribution):
+def update_data_files(distribution):
     """update package_data to catch changes during setup"""
     build_py = distribution.get_command_obj('build_py')
-    # distribution.package_data = find_package_data()
+    distribution.data_files = get_data_files()
     # re-init build_py options which load package_data
     build_py.finalize_options()
 
@@ -112,6 +124,7 @@ class NPM(Command):
             log.info("Installing build dependencies with npm.  This may take a while...")
             npmName = self.get_npm_name()
             check_call([npmName, 'install'], cwd=node_root, stdout=sys.stdout, stderr=sys.stderr)
+            check_call([npmName, 'pack'], cwd=node_root, stdout=sys.stdout, stderr=sys.stderr)
             os.utime(self.node_modules, None)
 
         for t in self.targets:
@@ -122,7 +135,7 @@ class NPM(Command):
                 raise ValueError(msg)
 
         # update package data in case this created new files
-        update_package_data(self.distribution)
+        update_data_files(self.distribution)
 
 
 class GenerateSource(Command):
@@ -150,12 +163,7 @@ setup_args = {
     'description': 'Modern form/ui elements for Jupyter Widgets',
     'long_description': LONG_DESCRIPTION,
     'include_package_data': True,
-    'data_files': [
-        ('share/jupyter/nbextensions/jupyter-materialui', [
-            glob.glob('ipymaterialui/static/*'),
-        ],),
-        ('etc/jupyter/nbconfig/notebook.d/', ['jupyter-materialui.json'])
-    ],
+    'data_files': get_data_files(),
     'install_requires': [
         'ipywidgets>=7.0.0',
     ],
