@@ -62,15 +62,19 @@ class TopComponent extends React.Component {
 
         const { view } = this.props;
 
+        /* Recursively convert relevant backbone model properties to a props object */
         const childProps = model.keys()
             .filter(k => !k.startsWith('_') && k !== 'layout' && model.get(k) != null)
             .reduce((accumulator, key) => {
                 let v;
                 if (key === 'anchor_el') {
+                    /* anchor_el prop is an DOM element. Find the DOM element rendered for this model and use is as prop */
                     v = document.querySelector(`[cid=${view.cid}${model.get(key).cid}]`);
-                } else if (key === 'value') { // value can be a widgetModel, we don't want to convert it to a react component
+                } else if (key === 'value') {
+                    /* value can be a widgetModel, we don't want to convert it to a react component */
                     v = model.get(key);
                 } else {
+                    /* Recursive step */
                     v = this.convertModels(model.get(key), ancestors.concat(model));
                 }
                 return { ...accumulator, [convertPropertyName(key)]: v };
