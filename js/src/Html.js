@@ -12,6 +12,10 @@ export class HtmlModel extends ReactWidgetModel {
             },
         };
     }
+
+    getReactComponent() {
+        return this.get('tag');
+    }
 }
 
 HtmlModel.serializers = {

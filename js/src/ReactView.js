@@ -136,8 +136,7 @@ class TopComponent extends React.Component {
 
     convertModels(value, ancestors) {
         if (value instanceof ReactWidgetModel) {
-            const comp = value.getReactComponent ? value.getReactComponent() : value.get('tag');
-            return React.createElement(comp, this.makeProps(value, ancestors));
+            return React.createElement(value.getReactComponent(), this.makeProps(value, ancestors));
         }
         const { view } = this.props;
         if (value instanceof WidgetModel) {
