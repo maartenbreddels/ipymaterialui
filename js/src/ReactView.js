@@ -4,7 +4,8 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { styleWrapper } from './style_wrap';
-import { ReactWidgetModel } from './generated/ReactWidget';
+import {ReactWidgetModel, RadioGroupModel, FormControlLabelModel, TabsModel, RadioModel} from './generated';
+import {ToggleButtonGroupModel, ToggleButtonModel} from "./generated_lab";
 
 class WidgetComponent extends React.Component {
     constructor(props) {
@@ -48,8 +49,6 @@ class TopComponent extends React.Component {
             return result;
         };
 
-        const hasAncestor = name => ancestors.map(m => m.name).some(n => n === name);
-
         const { view } = this.props;
 
         const childProps = model.keys()
@@ -66,26 +65,43 @@ class TopComponent extends React.Component {
                 return { ...accumulator, [snakeToCamel(key)]: v };
             }, {});
 
+        /* We want Material UI widgets to change the state of properties that are changed internally, like e.g
+         * Slider.value, this is not automatically done by these widgets. This property has to be set using an onChange
+         * callback and is not always named value but also checked or selected. In some cases an ancestor widget takes
+         * over the event handling and this widget should do nothing.
+         */
         if (model.keys().includes('checked')) {
-            const dontUseChecked = (model.name === 'RadioModel' && hasAncestor('RadioGroupModel'))
-                || (model.name === 'FormControlLabelModel' && hasAncestor('RadioGroupModel'));
-            if (!dontUseChecked) {
+            /* This widget uses checked as main property which should be changed in the onChange callback if it doesn't
+             * have an ancestor which should handle the event.
+             */
+            const ancestorHandlesEvent = (model instanceof RadioModel || model instanceof FormControlLabelModel)
+                && ancestors.some(m => m instanceof RadioGroupModel);
+            if (!ancestorHandlesEvent) {
                 childProps.onChange = (e, checked) => {
                     model.set('checked', checked);
                     model.save_changes(model.callbacks(view));
                 };
             }
         } else if (model.keys().includes('selected')) {
-            const dontUseSelected = model.name === 'ToggleButtonModel' && hasAncestor('ToggleButtonGroupModel');
-            if (!dontUseSelected) {
+            /* This widget uses selected as main property which should be changed in the onChange callback if it doesn't
+             * have an ancestor which should handle the event.
+             */
+            const ancestorHandlesEvent = model instanceof ToggleButtonModel
+                && ancestors.some(m => m instanceof ToggleButtonGroupModel);
+            if (!ancestorHandlesEvent) {
                 childProps.onChange = () => {
                     model.set('selected', !model.get('selected'));
                     model.save_changes(model.callbacks(view));
                 };
             }
         } else if (model.keys().includes('value')) {
+            /* This widget uses value as main property which should be changed in the onChange callback. The new value
+             * is, depending on the widget, stored in the event or value argument of the onChange callback.
+             */
             childProps.onChange = (e, value) => {
-                if (e.target && e.target.value !== undefined && !['ToggleButtonGroupModel', 'TabsModel'].includes(model.name)) {
+                if (model instanceof ToggleButtonGroupModel || model instanceof TabsModel) {
+                    model.set('value', value);
+                } else if (e.target && e.target.value !== undefined) {
                     model.set('value', e.target.value);
                 } else if (value !== undefined) {
                     model.set('value', value);
