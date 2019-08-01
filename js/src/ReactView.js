@@ -40,13 +40,17 @@ class TopComponent extends React.Component {
     }
 
     makeProps(model, ancestors) {
-        const snakeToCamel = (s) => {
+        const convertPropertyName = (s) => {
+            /* remove trailing underscore (previously added to prevent keyword or naming collisions) */
             let result = s.replace(/_$/, '');
+            /* Properties starting with aria have kebab case */
             if (result.startsWith('aria')) {
                 return result.replace('_', '-');
             }
-            result = result.replace(/_\w/g, m => m[1].toUpperCase());
-            return result;
+            /* Convert from snake to camel case without changing the case of the first character.
+             * Some properties start with an uppercase.
+             */
+            return result.replace(/_\w/g, m => m[1].toUpperCase());
         };
 
         const { view } = this.props;
@@ -62,7 +66,7 @@ class TopComponent extends React.Component {
                 } else {
                     v = this.convertModels(model.get(key), ancestors.concat(model));
                 }
-                return { ...accumulator, [snakeToCamel(key)]: v };
+                return { ...accumulator, [convertPropertyName(key)]: v };
             }, {});
 
         /* We want Material UI widgets to change the state of properties that are changed internally, like e.g
