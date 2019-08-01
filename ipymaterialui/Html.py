@@ -1,4 +1,3 @@
-import ipywidgets as widgets
 from traitlets import (Unicode, Instance, Union, List)
 from .generated.ReactWidget import ReactWidget
 from ipywidgets import DOMWidget
@@ -21,13 +20,6 @@ class Html(ReactWidget):
     ], default_value=None, allow_none=True).tag(sync=True, **widget_serialization)
 
     tag = Unicode(None, allow_none=True).tag(sync=True)
-
-
-def divjslink(widget, property):
-    div = Html(tag='div')
-    widgets.jslink((widget, property), (div, 'children'))
-
-    return div
 
 
 __all__ = ['Html']
