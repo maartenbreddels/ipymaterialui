@@ -172,6 +172,10 @@ class TopComponent extends React.Component {
     }
 
     render() {
+        /* When any property of any backbone model this model hierarchy changes, re render the whole React virtual DOM.
+         * First unregister all change callbacks from models previously rendered, then add change callbacks to all
+         * models currently in the model hierarchy.
+         */
         (this.allModels || []).forEach(m => m.off('change', this.updateCallback));
         const { model } = this.props;
         this.allModels = this.listModels(model);
