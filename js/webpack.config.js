@@ -7,15 +7,8 @@ var rules = [
     { test: /\.css$/, use: ['style-loader', 'css-loader']},
     {
           test: /\.(woff|woff2|eot|ttf|svg)$/,
-          loader: 'file?name=fonts/[name].[ext]'
+          loader: 'file-loader',
     },
-    {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader"
-        }
-    }    
 ]
 
 
@@ -33,7 +26,8 @@ module.exports = [
             filename: 'extension.js',
             path: path.resolve(__dirname, '..', 'ipymaterialui', 'static'),
             libraryTarget: 'amd'
-        }
+        },
+        mode: 'production',
     },
     {// Bundle for the notebook containing the custom widget views and models
      //
@@ -41,7 +35,7 @@ module.exports = [
      // custom widget.
      // It must be an amd module
      //
-        entry: './lib/index.js',
+        entry: './lib/notebook.js',
         output: {
             filename: 'index.js',
             path: path.resolve(__dirname, '..', 'ipymaterialui', 'static'),
@@ -52,9 +46,14 @@ module.exports = [
             rules: rules
         },
         resolve: {
-            alias: {'./style_wrap': path.resolve(__dirname, 'src/style_wrap_notebook.js')},
+            alias: {'./style_wrap': path.resolve(__dirname, 'lib/style_wrap_notebook.js')},
         },
-        externals: ['@jupyter-widgets/base']
+        externals: ['@jupyter-widgets/base'],
+        mode: 'production',
+        performance: {
+            maxEntrypointSize: 1400000,
+            maxAssetSize: 1400000
+        },
     },
     {// Embeddable jupyter-materialui bundle
      //
@@ -81,6 +80,11 @@ module.exports = [
         module: {
             rules: rules
         },
-        externals: ['@jupyter-widgets/base']
+        externals: ['@jupyter-widgets/base'],
+        mode: 'production',
+        performance: {
+            maxEntrypointSize: 1400000,
+            maxAssetSize: 1400000
+        },
     }
 ];

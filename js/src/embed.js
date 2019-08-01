@@ -5,8 +5,4 @@
 // already be loaded by the notebook otherwise.
 
 // Export widget models and views, and the npm package version number.
-export * from "./core";
-export * from "./react-widget";
-export
-let version = "0.1.0";
-
+export * from './index';

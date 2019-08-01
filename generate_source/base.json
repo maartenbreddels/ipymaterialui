@@ -1,0 +1,34 @@
+{
+  "widgets": {
+    "ReactWidget": {
+      "inherits": [
+        "DOMWidget"
+      ],
+      "properties": {
+        "_view_name": "ReactView",
+        "_view_module": "jupyter-materialui",
+        "_model_module": "jupyter-materialui",
+        "_view_module_version": "^0.0.1-alpha.0",
+        "_model_module_version": "^0.0.1-alpha.0",
+        "_metadata": {
+          "type": "object",
+          "allowNull": true,
+          "default": null
+        },
+        "_events": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "allowNull": true,
+          "default": null
+        },
+        "style_": {
+          "type": "object",
+          "allowNull": true,
+          "default": null
+        }
+      }
+    }
+  }
+}
