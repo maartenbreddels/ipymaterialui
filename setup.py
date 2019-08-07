@@ -29,9 +29,7 @@ LONG_DESCRIPTION = 'Modern form/ui elements for Jupyter Widgets'
 
 
 def get_data_files():
-    with open(os.path.join('js', 'package.json')) as f:
-        package_json = json.load(f)
-    tgz = '%s-%s.tgz' % (package_json['name'], package_json['version'])
+    tgz = 'jupyter-materialui-' + version_ns['__version__'] + '.tgz'
     return [
         ('share/jupyter/nbextensions/jupyter-materialui',  glob.glob('ipymaterialui/static/*')),
         ('etc/jupyter/nbconfig/notebook.d', ['jupyter-materialui.json']),
