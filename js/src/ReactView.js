@@ -199,9 +199,13 @@ export class ReactView extends DOMWidgetView {
         super.render();
         ReactDOM.render(
             styleWrapper(
-                React.createElement(TopComponent, { model: this.model, view: this }),
+                this._render(this.model, this),
             ),
             this.el,
         );
+    }
+
+    _render(model, view) {
+        return React.createElement(TopComponent, { model, view });
     }
 }
