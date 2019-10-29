@@ -8,8 +8,8 @@
         "_view_name": "ReactView",
         "_view_module": "jupyter-materialui",
         "_model_module": "jupyter-materialui",
-        "_view_module_version": "^0.1.2",
-        "_model_module_version": "^0.1.2",
+        "_view_module_version": "^0.1.3",
+        "_model_module_version": "^0.1.3",
         "_metadata": {
           "type": "object",
           "allowNull": true,
