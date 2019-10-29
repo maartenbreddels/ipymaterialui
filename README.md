@@ -1,6 +1,10 @@
 ipymaterialui
 ===============================
 
+[![Version](https://img.shields.io/npm/v/jupyter-materialui.svg)](https://www.npmjs.com/package/jupyter-materialui)
+[![Version](https://img.shields.io/pypi/v/ipymaterialui.svg)](https://pypi.python.org/mariobuikhuizen/ipymaterialui)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/ipymaterialui.svg)](https://anaconda.org/conda-forge/ipymaterialui)
+
 Jupyter Widgets based on [Material-UI](https://material-ui.com/) which implement Google's 
 [Material Design Spec](https://material.io/) with [React](https://reactjs.org/).
 
