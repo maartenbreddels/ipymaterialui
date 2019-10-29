@@ -11,8 +11,6 @@ import glob
 from distutils import log
 import json
 
-from generate_source import generate
-
 here = os.path.dirname(os.path.abspath(__file__))
 node_root = os.path.join(here, 'js')
 is_repo = os.path.exists(os.path.join(here, '.git'))
@@ -148,6 +146,7 @@ class GenerateSource(Command):
         pass
 
     def run(self):
+        from generate_source import generate
         generate()
 
 
@@ -165,7 +164,7 @@ setup_args = {
     'install_requires': [
         'ipywidgets>=7.0.0',
     ],
-    'packages': find_packages(),
+    'packages': find_packages(exclude=['generate_source']),
     'zip_safe': False,
     'cmdclass': {
         'build_py': js_prerelease(build_py),
