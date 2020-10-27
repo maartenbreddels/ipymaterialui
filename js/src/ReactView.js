@@ -208,4 +208,9 @@ export class ReactView extends DOMWidgetView {
     _render(model, view) {
         return React.createElement(TopComponent, { model, view });
     }
+
+    remove() {
+        ReactDOM.unmountComponentAtNode(this.el);
+        return super.remove();
+    }
 }
